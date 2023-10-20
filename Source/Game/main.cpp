@@ -1,7 +1,7 @@
-
-#include <iostream>
+#include "MainWindow.h"
 
 int main()
 {
-	std::cout << "hello";
+	MainWindow _gameWindow;
+	_gameWindow.startGameLoop();
 }
