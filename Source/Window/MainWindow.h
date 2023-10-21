@@ -1,5 +1,7 @@
 #pragma once
 
+#include "GameController.h"
+
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <memory>
 
@@ -14,5 +16,6 @@ private:
 	void handleControlBarEvent();
 
 private:
-	std::unique_ptr<sf::RenderWindow> _mainWindow;
+	std::unique_ptr<sf::RenderWindow> _gameWindow;
+	std::unique_ptr<GameController> _gameController;
 };
