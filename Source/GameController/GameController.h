@@ -17,6 +17,7 @@ public:
 	void drawCenterLine();
 
 	void updateBallPosition();
+	void handleBot();
 
 private:
 	void setDefaultPositions();
@@ -25,8 +26,9 @@ private:
 private:
 	sf::RenderWindow* _gameWindow;
 	Player* _player1;
-	Player* _player2;
+	Player* _bot;
 	Ball* _ball;
+	const float _botSpeed {0.175};
 
 	sf::Vector2f _ballVelocity {-0.1, 0.1};
 };

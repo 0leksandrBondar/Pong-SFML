@@ -21,6 +21,7 @@ void MainWindow::startGameLoop()
 		_gameController->drawPlayers();
 		_gameController->updateBallPosition();
 		_gameController->handleMoveEvent();
+		_gameController->handleBot();
 		_gameWindow->display();
 	}
 }

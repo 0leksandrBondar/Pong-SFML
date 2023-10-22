@@ -9,7 +9,7 @@
 #include <random>
 
 GameController::GameController(sf::RenderWindow* window)
-	: _gameWindow {window}, _player1 {new Player}, _player2 {new Player}, _ball {new Ball}
+	: _gameWindow {window}, _player1 {new Player}, _bot {new Player}, _ball {new Ball}
 {
 	initFirstDirection();
 	setDefaultPositions();
@@ -18,14 +18,14 @@ GameController::GameController(sf::RenderWindow* window)
 GameController::~GameController()
 {
 	delete _player1;
-	delete _player2;
+	delete _bot;
 	delete _ball;
 }
 
 void GameController::drawPlayers() const
 {
 	_gameWindow->draw(_player1->shape());
-	_gameWindow->draw(_player2->shape());
+	_gameWindow->draw(_bot->shape());
 	_gameWindow->draw(_ball->shape());
 }
 
@@ -48,20 +48,6 @@ void GameController::handleMoveEvent()
 			_player1->updatePos({0, -playerSpeed});
 		}
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-	{
-		if (_player2->getPos().y - playerSpeed > 0)
-		{
-			_player2->updatePos({0, -playerSpeed});
-		}
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-	{
-		if (_player2->getPos().y + _player1->shape().getSize().y + playerSpeed < windowHeight)
-		{
-			_player2->updatePos({0, playerSpeed});
-		}
-	}
 }
 
 void GameController::setDefaultPositions()
@@ -70,7 +56,7 @@ void GameController::setDefaultPositions()
 	const auto centerX {windowSize.x / 2};
 
 	_player1->shape().setPosition(centerX - (centerX / 2), windowSize.y / 2);
-	_player2->shape().setPosition(centerX + (centerX / 2), windowSize.y / 2);
+	_bot->shape().setPosition(centerX + (centerX / 2), windowSize.y / 2);
 	_ball->shape().setPosition(_gameWindow->getSize().x / 2, _gameWindow->getSize().y / 2);
 }
 
@@ -131,12 +117,12 @@ void GameController::updateBallPosition()
 			_ballVelocity.y += 0.1f;
 		}
 	}
-	if (_ball->shape().getGlobalBounds().intersects(_player2->shape().getGlobalBounds()))
+	if (_ball->shape().getGlobalBounds().intersects(_bot->shape().getGlobalBounds()))
 	{
 		_ballVelocity.x = -_ballVelocity.x;
 
 		sf::FloatRect ballBounds = _ball->shape().getGlobalBounds();
-		sf::FloatRect playerBounds = _player2->shape().getGlobalBounds();
+		sf::FloatRect playerBounds = _bot->shape().getGlobalBounds();
 
 		float ballCenterY = ballBounds.top + ballBounds.height / 2;
 		float playerTop = playerBounds.top;
@@ -171,4 +157,19 @@ void GameController::initFirstDirection()
 	}
 	std::uniform_int_distribution<int> disVertical(-1, 1);
 	_ballVelocity.y = disVertical(gen) * 0.1f;
+}
+
+void GameController::handleBot()
+{
+	sf::Vector2f ballPosition = _ball->shape().getPosition();
+	sf::Vector2f player2Position = _bot->shape().getPosition();
+
+	if (ballPosition.y < player2Position.y)
+	{
+		_bot->shape().move(0.0f, -_botSpeed);
+	}
+	else if (ballPosition.y > player2Position.y)
+	{
+		_bot->shape().move(0.0f, _botSpeed);
+	}
 }
