@@ -3,6 +3,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 class Player;
+class Ball;
 
 class GameController
 {
@@ -22,4 +23,5 @@ private:
 	sf::RenderWindow* _gameWindow;
 	Player* _player1;
 	Player* _player2;
+	Ball* _ball;
 };

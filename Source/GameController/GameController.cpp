@@ -1,12 +1,14 @@
 #include "GameController.h"
 
+#include "Ball.h"
 #include "Player.h"
 
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
-GameController::GameController(sf::RenderWindow* window) : _gameWindow {window}, _player1 {new Player}, _player2 {new Player}
+GameController::GameController(sf::RenderWindow* window)
+	: _gameWindow {window}, _player1 {new Player}, _player2 {new Player}, _ball {new Ball}
 {
 	setDefaultPositions();
 }
@@ -15,12 +17,14 @@ GameController::~GameController()
 {
 	delete _player1;
 	delete _player2;
+	delete _ball;
 }
 
 void GameController::drawPlayers() const
 {
 	_gameWindow->draw(_player1->shape());
 	_gameWindow->draw(_player2->shape());
+	_gameWindow->draw(_ball->shape());
 }
 
 void GameController::handleMoveEvent()
@@ -65,6 +69,7 @@ void GameController::setDefaultPositions()
 
 	_player1->shape().setPosition(centerX - (centerX / 2), windowSize.y / 2);
 	_player2->shape().setPosition(centerX + (centerX / 2), windowSize.y / 2);
+	_ball->shape().setPosition(_gameWindow->getSize().x / 2, _gameWindow->getSize().y / 2);
 }
 
 void GameController::drawCenterLine()
