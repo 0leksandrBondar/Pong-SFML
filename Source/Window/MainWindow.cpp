@@ -19,6 +19,7 @@ void MainWindow::startGameLoop()
 		handleControlBarEvent();
 		_gameController->drawCenterLine();
 		_gameController->drawPlayers();
+		_gameController->updateBallPosition();
 		_gameController->handleMoveEvent();
 		_gameWindow->display();
 	}

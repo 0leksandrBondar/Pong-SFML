@@ -6,10 +6,12 @@
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Window/Keyboard.hpp>
+#include <random>
 
 GameController::GameController(sf::RenderWindow* window)
 	: _gameWindow {window}, _player1 {new Player}, _player2 {new Player}, _ball {new Ball}
 {
+	initFirstDirection();
 	setDefaultPositions();
 }
 
@@ -97,4 +99,76 @@ void GameController::drawCenterLine()
 
 		_gameWindow->draw(lineSprite);
 	}
+}
+
+void GameController::updateBallPosition()
+{
+	_ball->shape().move(_ballVelocity);
+
+	if (_ball->shape().getPosition().y < 0 ||
+		_ball->shape().getPosition().y + _ball->shape().getGlobalBounds().height > _gameWindow->getSize().y)
+	{
+		_ballVelocity.y = -_ballVelocity.y;
+	}
+
+	if (_ball->shape().getGlobalBounds().intersects(_player1->shape().getGlobalBounds()))
+	{
+		_ballVelocity.x = -_ballVelocity.x;
+
+		sf::FloatRect ballBounds = _ball->shape().getGlobalBounds();
+		sf::FloatRect playerBounds = _player1->shape().getGlobalBounds();
+
+		float ballCenterY = ballBounds.top + ballBounds.height / 2;
+		float playerTop = playerBounds.top;
+		float playerBottom = playerBounds.top + playerBounds.height;
+
+		if (ballCenterY < playerTop + playerBounds.height / 3)
+		{
+			_ballVelocity.y -= 0.1f;
+		}
+		else if (ballCenterY > playerBottom - playerBounds.height / 3)
+		{
+			_ballVelocity.y += 0.1f;
+		}
+	}
+	if (_ball->shape().getGlobalBounds().intersects(_player2->shape().getGlobalBounds()))
+	{
+		_ballVelocity.x = -_ballVelocity.x;
+
+		sf::FloatRect ballBounds = _ball->shape().getGlobalBounds();
+		sf::FloatRect playerBounds = _player2->shape().getGlobalBounds();
+
+		float ballCenterY = ballBounds.top + ballBounds.height / 2;
+		float playerTop = playerBounds.top;
+		float playerBottom = playerBounds.top + playerBounds.height;
+
+		if (ballCenterY < playerTop + playerBounds.height / 3)
+		{
+			_ballVelocity.y -= 0.1f;
+		}
+		else if (ballCenterY > playerBottom - playerBounds.height / 3)
+		{
+			_ballVelocity.y += 0.1f;
+		}
+	}
+}
+
+void GameController::initFirstDirection()
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dis(0, 1);
+
+	int randomDirection = dis(gen);
+
+	if (randomDirection == 0)
+	{
+		_ballVelocity.x = -0.1f;
+	}
+	else
+	{
+		_ballVelocity.x = 0.1f;
+	}
+	std::uniform_int_distribution<int> disVertical(-1, 1);
+	_ballVelocity.y = disVertical(gen) * 0.1f;
 }
