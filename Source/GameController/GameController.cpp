@@ -173,3 +173,11 @@ void GameController::handleBot()
 		_bot->shape().move(0.0f, _botSpeed);
 	}
 }
+void GameController::start()
+{
+	drawCenterLine();
+	drawPlayers();
+	updateBallPosition();
+	handleBot();
+	handleMoveEvent();
+}

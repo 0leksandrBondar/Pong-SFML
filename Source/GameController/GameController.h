@@ -1,9 +1,9 @@
 #pragma once
 
+#include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
 class Player;
-class Ball;
 
 class GameController
 {
@@ -19,15 +19,16 @@ public:
 	void updateBallPosition();
 	void handleBot();
 
+	void start();
 private:
 	void setDefaultPositions();
 	void initFirstDirection();
 
 private:
+	sf::CircleShape* _ball;
 	sf::RenderWindow* _gameWindow;
 	Player* _player1;
 	Player* _bot;
-	Ball* _ball;
 	const float _botSpeed {0.175};
 
 	sf::Vector2f _ballVelocity {-0.1, 0.1};

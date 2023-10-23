@@ -15,13 +15,10 @@ void MainWindow::startGameLoop()
 {
 	while (_gameWindow->isOpen())
 	{
-		_gameWindow->clear(sf::Color::Black);
 		handleControlBarEvent();
-		_gameController->drawCenterLine();
-		_gameController->drawPlayers();
-		_gameController->updateBallPosition();
-		_gameController->handleMoveEvent();
-		_gameController->handleBot();
+
+		_gameWindow->clear(sf::Color::Black);
+		_gameController->start();
 		_gameWindow->display();
 	}
 }
