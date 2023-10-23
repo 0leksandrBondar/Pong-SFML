@@ -6,16 +6,14 @@ class Player
 {
 public:
 	Player();
+	~Player();
 
-	unsigned score() const;
+	[[nodiscard]] unsigned int score() const;
 	void increaseScore();
-
-	void updatePos(sf::Vector2f newPos);
-	sf::Vector2f getPos();
 
 	sf::RectangleShape& shape();
 
 private:
 	unsigned int _score {0};
-	sf::RectangleShape _shape;
+	sf::RectangleShape* _shape;
 };
