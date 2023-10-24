@@ -20,6 +20,7 @@ public:
 	void handleBot();
 
 	void start();
+
 private:
 	void setDefaultPositions();
 	void initFirstDirection();
@@ -27,9 +28,14 @@ private:
 private:
 	sf::CircleShape* _ball;
 	sf::RenderWindow* _gameWindow;
-	Player* _player1;
-	Player* _bot;
-	const float _botSpeed {0.175};
+	sf::Vector2f _ballVelocity {-3, 3};
 
-	sf::Vector2f _ballVelocity {-0.1, 0.1};
+private:
+	Player* _bot;
+	Player* _player;
+
+	const float _botVelocity {0.8};
+	const float _playerVelocity {2};
+
+	bool _isMathFinished {false};
 };
