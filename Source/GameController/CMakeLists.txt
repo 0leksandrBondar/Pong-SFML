@@ -10,6 +10,7 @@ target_link_libraries(
         GameController
         SFML
         Players
+        Widgets
 )
 
 target_include_directories(GameController PUBLIC ./)
