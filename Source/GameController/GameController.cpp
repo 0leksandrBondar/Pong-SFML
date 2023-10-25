@@ -8,10 +8,18 @@
 #include <random>
 
 GameController::GameController(sf::RenderWindow* window)
-	: _gameWindow {window}, _player {new Player}, _bot {new Player}, _ball {new sf::CircleShape(10, 10)}
+	: _ball {new sf::CircleShape(10, 10)}
+	, _gameWindow {window}
+	, _bot {new Player}
+	, _player {new Player}
+	, _playerScore {new sf::Text}
+	, _botScore {new sf::Text}
+	, _font {new sf::Font}
+
 {
 	_ball->setFillColor(sf::Color::Green);
 
+	initLabelsStyle();
 	initFirstDirection();
 	setDefaultPositions();
 }
@@ -21,6 +29,9 @@ GameController::~GameController()
 	delete _player;
 	delete _bot;
 	delete _ball;
+	delete _playerScore;
+	delete _botScore;
+	delete _font;
 }
 
 void GameController::drawPlayers() const
@@ -57,7 +68,9 @@ void GameController::setDefaultPositions()
 
 	_player->shape().setPosition(centerX - (centerX / 2), windowSize.y / 2);
 	_bot->shape().setPosition(centerX + (centerX / 2), windowSize.y / 2);
-	_ball->setPosition(_gameWindow->getSize().x / 2, _gameWindow->getSize().y / 2);
+	_ball->setPosition(centerX, _gameWindow->getSize().y / 2);
+
+	_botScore->setPosition(centerX + 10, 15);
 }
 
 void GameController::drawCenterLine()
@@ -107,11 +120,11 @@ void GameController::updateBallPosition()
 		_ballVelocity.x = -_ballVelocity.x;
 		if (ballCenterY < playerBounds.top + playerBounds.height / 3)
 		{
-			_ballVelocity.y -= 0.2f;
+			_ballVelocity.y -= 0.15f;
 		}
 		else if (ballCenterY > playerBottom - playerBounds.height / 3)
 		{
-			_ballVelocity.y += 0.2f;
+			_ballVelocity.y += 0.15f;
 		}
 	}
 }
@@ -139,18 +152,29 @@ void GameController::initFirstDirection()
 void GameController::handleBot()
 {
 	sf::Vector2f ballPosition = _ball->getPosition();
-	sf::Vector2f player2Position = _bot->shape().getPosition();
+	sf::Vector2f botPosition = _bot->shape().getPosition();
 	const sf::Vector2u screenSize = _gameWindow->getSize();
 
-	if (ballPosition.y < player2Position.y && player2Position.y > 0)
+	if (ballPosition.y < botPosition.y && botPosition.y > 0)
 	{
 		_bot->shape().move(0.0f, -_botVelocity);
 	}
-	else if (ballPosition.y > player2Position.y && player2Position.y + _bot->shape().getGlobalBounds().height < screenSize.y)
+	else if (ballPosition.y > botPosition.y && botPosition.y + _bot->shape().getGlobalBounds().height < screenSize.y)
 	{
 		_bot->shape().move(0.0f, _botVelocity);
 	}
 }
+
+void GameController::drawScoreLabels()
+{
+	_playerScore->setString("Player score: " + std::to_string(_player->score()));
+	const sf::Vector2f playerScorePos {(_gameWindow->getSize().x / 2) - (_playerScore->getLocalBounds().width + 30), 10.0};
+	_playerScore->setPosition(playerScorePos);
+	_botScore->setString("Bot score: " + std::to_string(_bot->score()));
+	_gameWindow->draw(*_playerScore);
+	_gameWindow->draw(*_botScore);
+}
+
 	{
 		_bot->shape().move(0.0f, _botSpeed);
 	}
@@ -159,7 +183,19 @@ void GameController::start()
 {
 	drawCenterLine();
 	drawPlayers();
+	drawScoreLabels();
 	updateBallPosition();
 	handleBot();
 	handleMoveEvent();
+}
+
+void GameController::initLabelsStyle()
+{
+	_font->loadFromFile("C:/Users/aleks/Desktop/Pong/Resource/Fonts/arial.ttf");
+
+	_playerScore->setFont(*_font);
+	_playerScore->setStyle(sf::Text::Bold);
+
+	_botScore->setFont(*_font);
+	_botScore->setStyle(sf::Text::Bold);
 }
