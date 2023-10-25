@@ -7,3 +7,19 @@ target_link_libraries(
         SFML
         Window
 )
+
+add_custom_command(TARGET Pong PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/Resource
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/Resource
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/Resource
+        ${CMAKE_CURRENT_BINARY_DIR}/Resource)
+
+add_custom_target(
+        Copy-Assets
+        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/Resource
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/Resource
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/Resource
+        ${CMAKE_CURRENT_BINARY_DIR}/Resource
+)

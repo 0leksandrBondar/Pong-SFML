@@ -29,7 +29,7 @@ void MainWindow::handleControlBarEvent()
 
 	while (_gameWindow->pollEvent(event))
 	{
-		if (event.type == sf::Event::Closed)
+		if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 		{
 			_gameWindow->close();
 		}
