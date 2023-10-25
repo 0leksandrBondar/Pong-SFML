@@ -1,5 +1,6 @@
 #include "GameController.h"
 
+#include "GameResultScreen.h"
 #include "Player.h"
 
 #include <SFML/Graphics/RenderTexture.hpp>
@@ -12,14 +13,18 @@ GameController::GameController(sf::RenderWindow* window)
 	, _gameWindow {window}
 	, _playerScore {new sf::Text}
 	, _botScore {new sf::Text}
+	, _exitHint {new sf::Text}
+	, _continueHint {new sf::Text}
 	, _font {new sf::Font}
 	, _bot {new Player}
 	, _player {new Player}
+	, _gameResultScreen {new GameResultScreen(window)}
 
 {
 	_ball->setFillColor(sf::Color::Green);
 
 	initLabelsStyle();
+	initHints();
 	initFirstDirection();
 	setDefaultPositions();
 }
@@ -31,7 +36,10 @@ GameController::~GameController()
 	delete _ball;
 	delete _playerScore;
 	delete _botScore;
+	delete _exitHint;
+	delete _continueHint;
 	delete _font;
+	delete _gameResultScreen;
 }
 
 void GameController::drawPlayers() const
@@ -108,7 +116,10 @@ void GameController::updateBallPosition()
 	const float ballCenterY = ballBounds.top + ballBounds.height / 2;
 	const float playerBottom = playerBounds.top + playerBounds.height;
 
-	_ball->move(_ballVelocity);
+	if (!_isRoundFinished)
+	{
+		_ball->move(_ballVelocity);
+	}
 
 	if (_ball->getPosition().y < 0 || _ball->getPosition().y + _ball->getGlobalBounds().height > _gameWindow->getSize().y)
 	{
@@ -173,14 +184,20 @@ void GameController::checkTheWinner()
 		if (botVictory)
 		{
 			_bot->increaseScore();
+			_isRoundFinished = true;
 		}
 		else if (playerVictory)
 		{
 			_player->increaseScore();
+			_isRoundFinished = true;
+		}
+
+		if (_player->score() > 10 || _bot->score() > 10)
+		{
+			_isMatchOver = true;
 		}
 		resetItemsPosition();
 		initFirstDirection();
-		_isMathFinished = true;
 	}
 }
 
@@ -189,22 +206,35 @@ void GameController::resetItemsPosition()
 	const sf::Vector2u center {_gameWindow->getSize().x / 2, _gameWindow->getSize().y / 2};
 	_ball->setPosition(center.x, center.y);
 	_player->shape().setPosition(center.x - (center.x / 2), _gameWindow->getSize().y / 2);
-	_bot->shape().setPosition(center.x + (center.x / 2), _gameWindow->getSize().y / 2);}
+	_bot->shape().setPosition(center.x + (center.x / 2), _gameWindow->getSize().y / 2);
+}
 
 void GameController::start()
 {
-	drawCenterLine();
-	drawPlayers();
-	drawScoreLabels();
-	updateBallPosition();
-	handleBot();
-	handleMoveEvent();
-	checkTheWinner();
+	if (!_isMatchOver)
+	{
+		drawCenterLine();
+		drawPlayers();
+		drawScoreLabels();
+		updateBallPosition();
+		handleBot();
+		handleMoveEvent();
+		checkTheWinner();
+		showHints();
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		{
+			_isRoundFinished = false;
+		}
+	}
+	else
+	{
+		showGameResult();
+	}
 }
 
 void GameController::initLabelsStyle()
 {
-	_font->loadFromFile("C:/Users/aleks/Desktop/Pong/Resource/Fonts/arial.ttf");
+	_font->loadFromFile("Resource/Fonts/arial.ttf");
 
 	_playerScore->setFont(*_font);
 	_playerScore->setStyle(sf::Text::Bold);
@@ -215,4 +245,45 @@ void GameController::initLabelsStyle()
 	_botScore->setStyle(sf::Text::Bold);
 	_botScore->setFillColor(sf::Color::Green);
 	_botScore->setCharacterSize(50);
+}
+
+void GameController::showGameResult()
+{
+	_gameWindow->draw(_gameResultScreen->shape());
+	_gameResultScreen->initTableInFrame();
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	{
+		_isMatchOver = false;
+	}
+}
+
+void GameController::showHints()
+{
+	_gameWindow->draw(*_exitHint);
+	if (_isRoundFinished)
+	{
+		_gameWindow->draw(*_continueHint);
+	}
+}
+
+void GameController::initHints()
+{
+	_font->loadFromFile("Resource/Fonts/arial.ttf");
+
+	const sf::Vector2u windowSize = _gameWindow->getSize();
+
+	_exitHint->setFont(*_font);
+	_exitHint->setFillColor(sf::Color::White);
+	_exitHint->setString("Press ESC to close the program");
+	sf::FloatRect exitHintRect = _exitHint->getLocalBounds();
+
+	_exitHint->setPosition(20, windowSize.y - (exitHintRect.height + 20));
+
+	_continueHint->setFont(*_font);
+	_continueHint->setFillColor(sf::Color::White);
+	_continueHint->setString("Press SPACE to start the game");
+	_continueHint->setFillColor(sf::Color::Yellow);
+	sf::FloatRect continueHintRect = _continueHint->getLocalBounds();
+
+	_continueHint->setPosition(windowSize.x / 2 - continueHintRect.width / 2, windowSize.y / 4);
 }
