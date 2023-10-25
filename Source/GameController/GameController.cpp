@@ -10,11 +10,11 @@
 GameController::GameController(sf::RenderWindow* window)
 	: _ball {new sf::CircleShape(10, 10)}
 	, _gameWindow {window}
-	, _bot {new Player}
-	, _player {new Player}
 	, _playerScore {new sf::Text}
 	, _botScore {new sf::Text}
 	, _font {new sf::Font}
+	, _bot {new Player}
+	, _player {new Player}
 
 {
 	_ball->setFillColor(sf::Color::Green);
@@ -70,7 +70,8 @@ void GameController::setDefaultPositions()
 	_bot->shape().setPosition(centerX + (centerX / 2), windowSize.y / 2);
 	_ball->setPosition(centerX, _gameWindow->getSize().y / 2);
 
-	_botScore->setPosition(centerX + 10, 15);
+	_botScore->setPosition(centerX + centerX / 5, 15);
+	_playerScore->setPosition(centerX - centerX / 2, 15);
 }
 
 void GameController::drawCenterLine()
@@ -168,17 +169,11 @@ void GameController::handleBot()
 void GameController::drawScoreLabels()
 {
 	_playerScore->setString("Player score: " + std::to_string(_player->score()));
-	const sf::Vector2f playerScorePos {(_gameWindow->getSize().x / 2) - (_playerScore->getLocalBounds().width + 30), 10.0};
-	_playerScore->setPosition(playerScorePos);
 	_botScore->setString("Bot score: " + std::to_string(_bot->score()));
 	_gameWindow->draw(*_playerScore);
 	_gameWindow->draw(*_botScore);
 }
 
-	{
-		_bot->shape().move(0.0f, _botSpeed);
-	}
-}
 void GameController::start()
 {
 	drawCenterLine();
@@ -195,7 +190,11 @@ void GameController::initLabelsStyle()
 
 	_playerScore->setFont(*_font);
 	_playerScore->setStyle(sf::Text::Bold);
+	_playerScore->setFillColor(sf::Color::Green);
+	_playerScore->setCharacterSize(50);
 
 	_botScore->setFont(*_font);
 	_botScore->setStyle(sf::Text::Bold);
+	_botScore->setFillColor(sf::Color::Green);
+	_botScore->setCharacterSize(50);
 }
