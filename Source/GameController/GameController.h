@@ -22,6 +22,10 @@ public:
 	void handleBot();
 
 	void drawScoreLabels();
+
+	void checkTheWinner();
+	void resetItemsPosition();
+
 	void start();
 
 private:

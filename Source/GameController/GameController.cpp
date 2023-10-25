@@ -134,20 +134,9 @@ void GameController::initFirstDirection()
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dis(0, 1);
 
-	int randomDirection = dis(gen);
-
-	if (randomDirection == 0)
-	{
-		_ballVelocity.x = -0.1f;
-	}
-	else
-	{
-		_ballVelocity.x = 0.1f;
-	}
-	std::uniform_int_distribution<int> disVertical(-1, 1);
-	_ballVelocity.y = disVertical(gen) * 0.1f;
+	std::uniform_int_distribution<int> disVertical(-0.3, 0.3);
+	_ballVelocity.y = disVertical(gen) * 0.3;
 }
 
 void GameController::handleBot()
@@ -174,6 +163,34 @@ void GameController::drawScoreLabels()
 	_gameWindow->draw(*_botScore);
 }
 
+void GameController::checkTheWinner()
+{
+	const bool botVictory {_ball->getPosition().x < _player->shape().getPosition().x};
+	const bool playerVictory {_ball->getPosition().x > _bot->shape().getPosition().x};
+
+	if (botVictory || playerVictory)
+	{
+		if (botVictory)
+		{
+			_bot->increaseScore();
+		}
+		else if (playerVictory)
+		{
+			_player->increaseScore();
+		}
+		resetItemsPosition();
+		initFirstDirection();
+		_isMathFinished = true;
+	}
+}
+
+void GameController::resetItemsPosition()
+{
+	const sf::Vector2u center {_gameWindow->getSize().x / 2, _gameWindow->getSize().y / 2};
+	_ball->setPosition(center.x, center.y);
+	_player->shape().setPosition(center.x - (center.x / 2), _gameWindow->getSize().y / 2);
+	_bot->shape().setPosition(center.x + (center.x / 2), _gameWindow->getSize().y / 2);}
+
 void GameController::start()
 {
 	drawCenterLine();
@@ -182,6 +199,7 @@ void GameController::start()
 	updateBallPosition();
 	handleBot();
 	handleMoveEvent();
+	checkTheWinner();
 }
 
 void GameController::initLabelsStyle()
