@@ -7,6 +7,7 @@ add_library(Players ${SOURCES})
 target_link_libraries(
         Players
         SFML
+        GameController
 )
 
 target_include_directories(Players PUBLIC ./)

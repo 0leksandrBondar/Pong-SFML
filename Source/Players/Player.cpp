@@ -1,18 +1,25 @@
 #include "Player.h"
+#include "GameState.h"
 
 Player::Player() : _shape {sf::RectangleShape(sf::Vector2f(30.f, 200.f))}
 {
 	_shape.setFillColor(sf::Color::Red);
+	GetGameState().registerPlayer(*this);
+}
+
+Player::~Player()
+{
+	GetGameState().unregisterPlayer(*this);
 }
 
 void Player::increaseScore()
 {
-	++_score;
+	++GetGameState().getPlayerStatistics(*this)->score;
 }
 
 unsigned int Player::score() const
 {
-	return _score;
+	return GetGameState().getPlayerStatistics(*this)->score;
 }
 
 sf::RectangleShape& Player::shape()
@@ -22,5 +29,5 @@ sf::RectangleShape& Player::shape()
 
 void Player::resetScore()
 {
-	_score = 0;
+	GetGameState().getPlayerStatistics(*this)->score = {};
 }

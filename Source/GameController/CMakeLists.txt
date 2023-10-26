@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.14)
 
 set(SOURCES
         GameController.h
-        GameController.cpp)
+        GameController.cpp
+        GameState.h
+        GameState.cpp)
 
 add_library(GameController ${SOURCES})
 
