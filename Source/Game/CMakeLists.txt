@@ -23,3 +23,8 @@ add_custom_target(
         ${CMAKE_SOURCE_DIR}/Resource
         ${CMAKE_CURRENT_BINARY_DIR}/Resource
 )
+
+add_custom_command(TARGET Pong PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${PROJECT_SOURCE_DIR}/Libs/SFML/bin"
+        $<TARGET_FILE_DIR:Pong>)
