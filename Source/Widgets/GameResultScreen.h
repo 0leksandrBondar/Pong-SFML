@@ -13,6 +13,10 @@ public:
 	sf::RectangleShape& shape();
 	void drawGameResultScreen();
 
+	void setGameResultFields(int playerScore, int botScore);
+	void setElapsedTime(sf::Time elapsedTime);
+	void isPlayerWinner(bool status);
+
 private:
 	void initLabels();
 	void initHeader();
@@ -29,4 +33,10 @@ private:
 	sf::RectangleShape _line;
 	sf::RectangleShape _frame;
 	sf::RenderWindow& _gameWindow;
+
+private:
+	int _playerScore {0};
+	int _botScore {0};
+	sf::Time _elapsedTime;
+	bool _isPlayerWinner {false};
 };

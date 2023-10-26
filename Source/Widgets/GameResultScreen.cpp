@@ -42,9 +42,7 @@ void GameResultScreen::initTableInFrame()
 void GameResultScreen::initHeader()
 {
 	_header.setFont(_font);
-	_header.setString("Victory");
 	_header.setCharacterSize(50);
-	_header.setFillColor(sf::Color::Cyan);
 	sf::FloatRect textRect = _header.getLocalBounds();
 	_header.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
 	_header.setPosition(_frame.getPosition().x, _frame.getPosition().y - _frame.getSize().y / 2 + 50);
@@ -53,30 +51,55 @@ void GameResultScreen::initHeader()
 void GameResultScreen::initLabels()
 {
 	_score.setFont(_font);
-	_score.setString("Score:");
 	sf::FloatRect rectOfScore = _score.getLocalBounds();
 	_score.setOrigin(rectOfScore.left + rectOfScore.width / 2.0f, rectOfScore.top + rectOfScore.height / 2.0f);
 	_score.setPosition(_frame.getPosition().x - _frame.getPosition().x / 2, _frame.getPosition().y - _frame.getPosition().y / 3);
 
 	_durationOfTheMatch.setFont(_font);
-	_durationOfTheMatch.setString("Duration of the match: ");
 	_durationOfTheMatch.setOrigin(rectOfScore.left + rectOfScore.width / 2.0f, rectOfScore.top + rectOfScore.height / 2.0f);
 	_durationOfTheMatch.setPosition(
-		_frame.getPosition().x - _frame.getPosition().x / 2, _frame.getPosition().y - _frame.getPosition().y / 4);
+		_frame.getPosition().x - _frame.getPosition().x / 2, _frame.getPosition().y - _frame.getPosition().y / 5);
 
 	_numberOfBouncedBalls.setFont(_font);
-	_numberOfBouncedBalls.setString("Number of bounced balls: ");
 	_numberOfBouncedBalls.setOrigin(rectOfScore.left + rectOfScore.width / 2.0f, rectOfScore.top + rectOfScore.height / 2.0f);
 	_numberOfBouncedBalls.setPosition(
-		_frame.getPosition().x - _frame.getPosition().x / 2, _frame.getPosition().y - _frame.getPosition().y / 6);
+		_frame.getPosition().x - _frame.getPosition().x / 2, _frame.getPosition().y - _frame.getPosition().y / 8);
 }
 
 void GameResultScreen::drawGameResultScreen()
 {
+	const std::string victoryLabel {"Victory"};
+	const std::string lossLabel {"Loss"};
+	const auto lable {_isPlayerWinner ? victoryLabel : lossLabel};
+	const auto Color {_isPlayerWinner ? sf::Color::Cyan : sf::Color::Red};
+
+	_header.setFillColor(Color);
+	_header.setString(lable);
+
+	_durationOfTheMatch.setString("Duration of the match: " + std::to_string(_elapsedTime.asSeconds()) + " sec.");
+	_numberOfBouncedBalls.setString("Number of bounced balls: ");
+	_score.setString("Player score: " + std::to_string(_playerScore) + "\n Bot score : " + std::to_string(_botScore));
+
 	_gameWindow.draw(_frame);
 	_gameWindow.draw(_line);
 	_gameWindow.draw(_score);
 	_gameWindow.draw(_header);
 	_gameWindow.draw(_durationOfTheMatch);
 	_gameWindow.draw(_numberOfBouncedBalls);
+}
+
+void GameResultScreen::setGameResultFields(int playerScore, int botScore)
+{
+	_playerScore = playerScore;
+	_botScore = botScore;
+}
+
+void GameResultScreen::setElapsedTime(sf::Time elapsedTime)
+{
+	_elapsedTime = elapsedTime;
+}
+
+void GameResultScreen::isPlayerWinner(bool status)
+{
+	_isPlayerWinner = status;
 }

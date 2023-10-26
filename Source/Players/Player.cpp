@@ -19,3 +19,8 @@ sf::RectangleShape& Player::shape()
 {
 	return _shape;
 }
+
+void Player::resetScore()
+{
+	_score = 0;
+}

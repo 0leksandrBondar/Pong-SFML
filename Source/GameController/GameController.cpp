@@ -155,7 +155,15 @@ void GameController::checkTheWinner()
 
 		if (_player.score() > 10 || _bot.score() > 10)
 		{
+			_gameResultScreen.setGameResultFields(_player.score(), _bot.score());
+			if (_player.score() > 10 || _bot.score() <= 10)
+			{
+				_gameResultScreen.isPlayerWinner(true);
+			}
 			_isMatchOver = true;
+			const auto elapsedTime = _timer.getElapsedTime();
+			_gameResultScreen.setElapsedTime(elapsedTime);
+			resetScores();
 		}
 		resetItemsPosition();
 		initFirstDirection();
@@ -186,6 +194,11 @@ void GameController::start()
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 		{
 			_isRoundFinished = false;
+			if (_needRestartTimer)
+			{
+				_timer.restart();
+				_needRestartTimer = false;
+			}
 		}
 	}
 	else
@@ -210,9 +223,11 @@ void GameController::initLabelsStyle()
 void GameController::drawGameResult()
 {
 	_gameResultScreen.drawGameResultScreen();
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
 		_isMatchOver = false;
+		_needRestartTimer = true;
 	}
 }
 
@@ -261,4 +276,10 @@ void GameController::initSoundBuffer()
 {
 	_soundBuffer.loadFromFile("Resource/Music/Paddle_Hit_Sound.wav");
 	_sound.setBuffer(_soundBuffer);
+}
+
+void GameController::resetScores()
+{
+	_player.resetScore();
+	_bot.resetScore();
 }

@@ -12,6 +12,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
+#include <SFML/System/Clock.hpp>
 
 class GameController
 {
@@ -26,6 +27,7 @@ private:
 	void handleBotBehavior();
 	void updateBallPosition();
 	void resetItemsPosition();
+	void resetScores();
 
 private:
 	void drawHints();
@@ -48,6 +50,8 @@ private:
 	sf::Text _exitHint;
 	sf::Text _playerScore;
 	sf::Text _continueHint;
+
+	sf::Clock _timer;
 
 	sf::Sound _sound;
 	sf::SoundBuffer _soundBuffer;
@@ -72,4 +76,5 @@ private:
 
 	bool _isMatchOver {false};
 	bool _isRoundFinished {true};
+	bool _needRestartTimer {true};
 };

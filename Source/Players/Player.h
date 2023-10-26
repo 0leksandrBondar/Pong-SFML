@@ -9,6 +9,7 @@ public:
 
 	[[nodiscard]] unsigned int score() const;
 	void increaseScore();
+	void resetScore();
 
 	sf::RectangleShape& shape();
 
