@@ -24,6 +24,9 @@ void GameController::drawPlayers()
 	_gameWindow.draw(_ball);
 }
 
+/*!
+ * \brief GameController::handleMoveEvent This method handles the user's button presses to move the platforms.
+ */
 void GameController::handleMoveEvent()
 {
 	const float windowHeight = static_cast<float>(_gameWindow.getSize().y);
@@ -69,6 +72,10 @@ void GameController::drawCenterLine()
 	_gameWindow.draw(_lineSprite);
 }
 
+/*!
+ * \brief GameController::updateBallPosition this method handles bouncing the ball off the platforms and calculates new coordinates
+ * for the ball then moves it.
+ */
 void GameController::updateBallPosition()
 {
 	const sf::FloatRect ballBounds = _ball.getGlobalBounds();
@@ -111,6 +118,10 @@ void GameController::initFirstDirection()
 	_ballVelocity.y = disVertical(gen) * 0.3;
 }
 
+/*!
+ * \brief GameController::handleBotBehavior this method implements the behavior of the bot and its shuffling relative to the ball
+ * positions.
+ */
 void GameController::handleBotBehavior()
 {
 	const sf::Vector2f ballPosition = _ball.getPosition();
@@ -135,6 +146,9 @@ void GameController::drawScoreLabels()
 	_gameWindow.draw(_playerScore);
 }
 
+/*!
+ * \brief GameController::checkTheWinner this method handles the completion of the round/game and determines the winner.
+ */
 void GameController::checkTheWinner()
 {
 	const bool botVictory {_ball.getPosition().x < _player.shape().getPosition().x};
@@ -170,6 +184,9 @@ void GameController::checkTheWinner()
 	}
 }
 
+/*!
+ * \brief GameController::resetItemsPosition this method sets the positions to the center of the screen for all graphic items.
+ */
 void GameController::resetItemsPosition()
 {
 	const sf::Vector2u center {_gameWindow.getSize().x / 2, _gameWindow.getSize().y / 2};
@@ -179,6 +196,9 @@ void GameController::resetItemsPosition()
 	_player.shape().setPosition(center.x - (center.x / 2), _gameWindow.getSize().y / 2);
 }
 
+/*!
+ * \brief  GameController::start this method performs all the game logic of drawing graphical items and processing the game logic.
+ */
 void GameController::start()
 {
 	if (!_isMatchOver)
@@ -278,6 +298,9 @@ void GameController::initSoundBuffer()
 	_sound.setBuffer(_soundBuffer);
 }
 
+/*!
+ * \brief GameController::resetScores this method resets the score value after the game is over.
+ */
 void GameController::resetScores()
 {
 	_player.resetScore();
