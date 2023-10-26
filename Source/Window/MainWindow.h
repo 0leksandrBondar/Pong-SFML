@@ -2,6 +2,7 @@
 
 #include "GameController.h"
 
+#include <SFML/Audio/Music.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <memory>
 
@@ -14,6 +15,8 @@ public:
 
 private:
 	void handleControlBarEvent();
+
+	sf::Music _playerMusic;
 
 private:
 	std::unique_ptr<sf::RenderWindow> _gameWindow;
