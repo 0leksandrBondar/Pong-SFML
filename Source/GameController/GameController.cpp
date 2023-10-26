@@ -16,6 +16,9 @@ GameController::GameController(sf::RenderWindow* window)
 	, _exitHint {new sf::Text}
 	, _continueHint {new sf::Text}
 	, _font {new sf::Font}
+	, _lineTexture {new sf::RenderTexture}
+	, _lineSprite {new sf::Sprite}
+	, _lineSegment {new sf::RectangleShape}
 	, _bot {new Player}
 	, _player {new Player}
 	, _gameResultScreen {new GameResultScreen(window)}
@@ -23,6 +26,7 @@ GameController::GameController(sf::RenderWindow* window)
 {
 	_ball->setFillColor(sf::Color::Green);
 
+	initCenterLine();
 	initLabelsStyle();
 	initHints();
 	initFirstDirection();
@@ -40,6 +44,9 @@ GameController::~GameController()
 	delete _continueHint;
 	delete _font;
 	delete _gameResultScreen;
+	delete _lineTexture;
+	delete _lineSprite;
+	delete _lineSegment;
 }
 
 void GameController::drawPlayers() const
@@ -84,29 +91,14 @@ void GameController::setDefaultPositions()
 
 void GameController::drawCenterLine()
 {
-	sf::RenderTexture lineTexture;
-	if (lineTexture.create(15, _gameWindow->getSize().y))
+	for (int y = 0; y < _lineTexture->getSize().y; y += (_lineSegment->getSize().y + _spacing))
 	{
-		lineTexture.clear(sf::Color::Transparent);
-
-		sf::RectangleShape lineSegment(sf::Vector2f(2, 30));
-		lineSegment.setFillColor(sf::Color::White);
-
-		const int spacing = 10;
-
-		for (int y = 0; y < lineTexture.getSize().y; y += (lineSegment.getSize().y + spacing))
-		{
-			lineSegment.setPosition(0, y);
-			lineTexture.draw(lineSegment);
-		}
-
-		lineTexture.display();
-
-		sf::Sprite lineSprite(lineTexture.getTexture());
-		lineSprite.setPosition((_gameWindow->getSize().x - 15) / 2, 0);
-
-		_gameWindow->draw(lineSprite);
+		_lineSegment->setPosition(0, y);
+		_lineTexture->draw(*_lineSegment);
 	}
+
+	_lineTexture->display();
+	_gameWindow->draw(*_lineSprite);
 }
 
 void GameController::updateBallPosition()
@@ -132,11 +124,11 @@ void GameController::updateBallPosition()
 		_ballVelocity.x = -_ballVelocity.x;
 		if (ballCenterY < playerBounds.top + playerBounds.height / 3)
 		{
-			_ballVelocity.y -= 0.15f;
+			_ballVelocity.y -= 0.05f;
 		}
 		else if (ballCenterY > playerBottom - playerBounds.height / 3)
 		{
-			_ballVelocity.y += 0.15f;
+			_ballVelocity.y += 0.05f;
 		}
 	}
 }
@@ -286,4 +278,16 @@ void GameController::initHints()
 	sf::FloatRect continueHintRect = _continueHint->getLocalBounds();
 
 	_continueHint->setPosition(windowSize.x / 2 - continueHintRect.width / 2, windowSize.y / 4);
+}
+
+void GameController::initCenterLine()
+{
+	if (_lineTexture->create(15, _gameWindow->getSize().y))
+	{
+		_lineTexture->clear(sf::Color::Transparent);
+		_lineSegment->setSize(sf::Vector2f(2, 30));
+		_lineSegment->setFillColor(sf::Color::White);
+		_lineSprite->setTexture(_lineTexture->getTexture());
+		_lineSprite->setPosition((_gameWindow->getSize().x - 15) / 2, 0);
+	}
 }
