@@ -3,6 +3,8 @@
 #include "GameResultScreen.h"
 #include "Player.h"
 
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -36,6 +38,7 @@ private:
 	void initHints();
 	void initCenterLine();
 	void initLabelsStyle();
+	void initSoundBuffer();
 	void initFirstDirection();
 	void initDefaultPositions();
 
@@ -45,6 +48,9 @@ private:
 	sf::Text _exitHint;
 	sf::Text _playerScore;
 	sf::Text _continueHint;
+
+	sf::Sound _sound;
+	sf::SoundBuffer _soundBuffer;
 
 	sf::Sprite _lineSprite;
 	sf::CircleShape _ball;
