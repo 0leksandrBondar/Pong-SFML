@@ -1,8 +1,8 @@
 #include "Player.h"
 
-Player::Player() : _shape {new sf::RectangleShape(sf::Vector2f(30.f, 200.f))}
+Player::Player() : _shape {sf::RectangleShape(sf::Vector2f(30.f, 200.f))}
 {
-	_shape->setFillColor(sf::Color::Red);
+	_shape.setFillColor(sf::Color::Red);
 }
 
 void Player::increaseScore()
@@ -17,10 +17,5 @@ unsigned int Player::score() const
 
 sf::RectangleShape& Player::shape()
 {
-	return *_shape;
-}
-
-Player::~Player()
-{
-	delete _shape;
+	return _shape;
 }

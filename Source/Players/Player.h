@@ -6,7 +6,6 @@ class Player
 {
 public:
 	Player();
-	~Player();
 
 	[[nodiscard]] unsigned int score() const;
 	void increaseScore();
@@ -15,5 +14,5 @@ public:
 
 private:
 	unsigned int _score {0};
-	sf::RectangleShape* _shape;
+	sf::RectangleShape _shape;
 };
