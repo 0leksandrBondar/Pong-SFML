@@ -6,10 +6,10 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <memory>
 
-class MainWindow
+class App
 {
 public:
-	MainWindow();
+	App();
 
 	void startGameLoop();
 

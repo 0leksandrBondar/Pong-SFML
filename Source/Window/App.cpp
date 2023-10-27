@@ -1,18 +1,18 @@
-#include "MainWindow.h"
+#include "App.h"
 
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include <iostream>
 
-MainWindow::MainWindow()
+App::App()
 	: _gameWindow(std::make_unique<sf::RenderWindow>(sf::VideoMode::getDesktopMode(), "Pong", sf::Style::Fullscreen))
 	, _gameController {std::make_unique<GameController>(_gameWindow.get())}
 {
 	_playerMusic.openFromFile("Resource/Music/Background_Music.wav");
 }
 
-void MainWindow::startGameLoop()
+void App::startGameLoop()
 {
 	_playerMusic.setLoop(true);
 	_playerMusic.play();
@@ -26,7 +26,7 @@ void MainWindow::startGameLoop()
 	}
 }
 
-void MainWindow::handleControlBarEvent()
+void App::handleControlBarEvent()
 {
 	sf::Event event {};
 

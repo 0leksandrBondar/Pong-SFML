@@ -1,7 +1,7 @@
-#include "MainWindow.h"
+#include "App.h"
 
 int main()
 {
-	MainWindow _gameWindow;
-	_gameWindow.startGameLoop();
+	App app;
+	app.startGameLoop();
 }

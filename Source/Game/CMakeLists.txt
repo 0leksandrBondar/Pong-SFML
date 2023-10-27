@@ -5,7 +5,7 @@ add_executable(Pong main.cpp)
 target_link_libraries(
         Pong
         SFML
-        Window
+        App
 )
 
 add_custom_command(TARGET Pong PRE_BUILD

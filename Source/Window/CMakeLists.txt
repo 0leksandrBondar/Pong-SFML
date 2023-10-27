@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.14)
 
 set(SOURCES
-        MainWindow.h
-        MainWindow.cpp)
+        App.h
+        App.cpp)
 
-add_library(Window ${SOURCES})
+add_library(App ${SOURCES})
 
 target_link_libraries(
-        Window
+        App
         SFML
         GameController
 )
 
-target_include_directories(Window PUBLIC ./)
+target_include_directories(App PUBLIC ./)
