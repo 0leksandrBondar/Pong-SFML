@@ -5,8 +5,8 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <random>
 
-GameController::GameController(sf::RenderWindow* window)
-	: _ball {sf::CircleShape(10, 10)}, _gameWindow {*window}, _gameResultScreen {GameResultScreen(window)}
+GameController::GameController(sf::RenderWindow& window)
+	: _ball {sf::CircleShape(10, 10)}, _gameWindow {window}, _gameResultScreen {GameResultScreen(window)}
 
 {
 	_ball.setFillColor(sf::Color::Green);

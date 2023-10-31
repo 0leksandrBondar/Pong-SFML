@@ -2,7 +2,7 @@
 
 #include "ResourceManager.h"
 
-GameResultScreen::GameResultScreen(sf::RenderWindow* window) : _gameWindow {*window}
+GameResultScreen::GameResultScreen(sf::RenderWindow& window) : _gameWindow {window}
 {
 	initFrameStyle();
 	initTableInFrame();

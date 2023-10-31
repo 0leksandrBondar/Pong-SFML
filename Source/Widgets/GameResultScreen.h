@@ -8,7 +8,7 @@
 class GameResultScreen
 {
 public:
-	explicit GameResultScreen(sf::RenderWindow* window = nullptr);
+	explicit GameResultScreen(sf::RenderWindow& window);
 
 	sf::RectangleShape& shape();
 	void drawGameResultScreen();

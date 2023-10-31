@@ -17,7 +17,7 @@
 class GameController
 {
 public:
-	explicit GameController(sf::RenderWindow* window);
+	explicit GameController(sf::RenderWindow& window);
 
 	void start();
 
