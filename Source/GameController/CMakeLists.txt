@@ -4,7 +4,9 @@ set(SOURCES
         GameController.h
         GameController.cpp
         GameState.h
-        GameState.cpp)
+        GameState.cpp
+        ResourceManager.cpp
+        ResourceManager.h)
 
 add_library(GameController ${SOURCES})
 

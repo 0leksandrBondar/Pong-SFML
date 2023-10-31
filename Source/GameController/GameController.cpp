@@ -1,5 +1,7 @@
 #include "GameController.h"
 
+#include "ResourceManager.h"
+
 #include <SFML/Window/Keyboard.hpp>
 #include <random>
 
@@ -262,7 +264,7 @@ void GameController::drawHints()
 
 void GameController::initHints()
 {
-	_font.loadFromFile("Resource/Fonts/arial.ttf");
+	_font.loadFromFile(ResourceManager::instance()->getFont(Font::Arial));
 
 	const sf::Vector2u windowSize = _gameWindow.getSize();
 
@@ -294,7 +296,7 @@ void GameController::initCenterLine()
 
 void GameController::initSoundBuffer()
 {
-	_soundBuffer.loadFromFile("Resource/Music/Paddle_Hit_Sound.wav");
+	_soundBuffer.loadFromFile(ResourceManager::instance()->getSound(Sound::HitSound));
 	_sound.setBuffer(_soundBuffer);
 }
 

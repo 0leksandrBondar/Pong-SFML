@@ -1,5 +1,7 @@
 #include "GameResultScreen.h"
 
+#include "ResourceManager.h"
+
 GameResultScreen::GameResultScreen(sf::RenderWindow* window) : _gameWindow {*window}
 {
 	initFrameStyle();
@@ -26,7 +28,7 @@ void GameResultScreen::initFrameStyle()
 
 void GameResultScreen::initTableInFrame()
 {
-	_font.loadFromFile("Resource/Fonts/arial.ttf");
+	_font.loadFromFile(ResourceManager::instance()->getFont(Font::Arial));
 
 	initHeader();
 	initLabels();
