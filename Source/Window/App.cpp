@@ -1,5 +1,7 @@
 #include "App.h"
 
+#include "ResourceManager.h"
+
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/VideoMode.hpp>
@@ -7,9 +9,9 @@
 
 App::App()
 	: _gameWindow(std::make_unique<sf::RenderWindow>(sf::VideoMode::getDesktopMode(), "Pong", sf::Style::Fullscreen))
-	, _gameController {std::make_unique<GameController>(_gameWindow.get())}
+	, _gameController {std::make_unique<GameController>(*_gameWindow)}
 {
-	_playerMusic.openFromFile("Resource/Music/Background_Music.wav");
+	_playerMusic.openFromFile(ResourceManager::instance()->getSound(Sound::Background));
 }
 
 void App::startGameLoop()
