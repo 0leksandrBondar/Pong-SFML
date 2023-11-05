@@ -39,15 +39,11 @@ private:
 private:
 	void initHints();
 	void initCenterLine();
-	void initSoundBuffer();
 	void initFirstDirection();
 	void initDefaultPositions();
 
 private:
 	sf::Clock _timer;
-
-	sf::Sound _sound;
-	sf::SoundBuffer _soundBuffer;
 
 	sf::Sprite _lineSprite;
 	sf::CircleShape _ball;

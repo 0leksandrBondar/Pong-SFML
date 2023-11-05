@@ -11,7 +11,6 @@ GameController::GameController(sf::RenderWindow& window)
 {
 	_ball.setFillColor(sf::Color::Green);
 	ResourceManager::instance()->initResources();
-	initSoundBuffer();
 	initCenterLine();
 	initHints();
 	initFirstDirection();
@@ -97,7 +96,7 @@ void GameController::updateBallPosition()
 	if (_ball.getGlobalBounds().intersects(_player.shape().getGlobalBounds()) ||
 		_ball.getGlobalBounds().intersects(_bot.shape().getGlobalBounds()))
 	{
-		_sound.play();
+		ResourceManager::instance()->getSound(Sound::HitSound)->play();
 		_ballVelocity.x = -_ballVelocity.x;
 		if (ballCenterY < playerBounds.top + playerBounds.height / 3)
 		{
@@ -271,12 +270,6 @@ void GameController::initCenterLine()
 		_lineSprite.setTexture(_lineTexture.getTexture());
 		_lineSprite.setPosition((_gameWindow.getSize().x - 15) / 2, 0);
 	}
-}
-
-void GameController::initSoundBuffer()
-{
-	_soundBuffer.loadFromFile(ResourceManager::instance()->getSound(Sound::HitSound));
-	_sound.setBuffer(_soundBuffer);
 }
 
 /*!

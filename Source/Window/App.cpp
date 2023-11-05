@@ -11,13 +11,12 @@ App::App()
 	: _gameWindow(std::make_unique<sf::RenderWindow>(sf::VideoMode::getDesktopMode(), "Pong", sf::Style::Fullscreen))
 	, _gameController {std::make_unique<GameController>(*_gameWindow)}
 {
-	_playerMusic.openFromFile(ResourceManager::instance()->getSound(Sound::Background));
 }
 
 void App::startGameLoop()
 {
-	_playerMusic.setLoop(true);
-	_playerMusic.play();
+	ResourceManager::instance()->getSound(Sound::Background)->play();
+	ResourceManager::instance()->getSound(Sound::Background)->setLoop(true);
 	while (_gameWindow->isOpen())
 	{
 		handleControlBarEvent();

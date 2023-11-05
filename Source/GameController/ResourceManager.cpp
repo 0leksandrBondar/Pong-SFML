@@ -1,5 +1,6 @@
 #include "ResourceManager.h"
 
+#include <SFML/Audio/SoundBuffer.hpp>
 #include <memory>
 
 ResourceManager::ResourceManager()
@@ -25,30 +26,27 @@ void ResourceManager::initFontResources()
 	addFont(Font::Arial, "Resource/Fonts/arial.ttf");
 }
 
-void ResourceManager::addFont(Font font, const std::string& path)
+void ResourceManager::addFont(Font font, const std::filesystem::path& path)
 {
 	auto* Font = new sf::Font;
-	Font->loadFromFile(path);
+	Font->loadFromFile(path.string());
 	_fonts.emplace(font, Font);
 }
 
 void ResourceManager::initSoundResources()
 {
-	_sounds.emplace(Sound::HitSound, "Resource/Music/Paddle_Hit_Sound.wav");
-	_sounds.emplace(Sound::Background, "Resource/Music/Background_Music.wav");
+	addSound(Sound::HitSound, "Resource/Music/Paddle_Hit_Sound.wav");
+	addSound(Sound::Background, "Resource/Music/Background_Music.wav");
 }
 
-std::string ResourceManager::getSound(Sound sound) const
+sf::Sound* ResourceManager::getSound(Sound sound) const
 {
 	const auto it = _sounds.find(sound);
 	if (it != _sounds.cend())
 	{
-		return it->second.string();
+		return it->second.second;
 	}
-	else
-	{
-		return "";
-	}
+	return nullptr;
 }
 
 sf::Font* ResourceManager::getFont(Font font) const
@@ -124,4 +122,15 @@ void ResourceManager::updatePlayerScore(int score)
 	{
 		playerScoreLabel->setString(text + std::to_string(score));
 	}
+}
+
+void ResourceManager::addSound(Sound sound, const std::filesystem::path& path)
+{
+	auto* Sound = new sf::Sound;
+	auto* buffer = new sf::SoundBuffer;
+
+	buffer->loadFromFile(path.string());
+	Sound->setBuffer(*buffer);
+
+	_sounds.emplace(sound, std::make_pair(buffer, Sound));
 }
