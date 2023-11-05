@@ -28,7 +28,6 @@ void GameResultScreen::initFrameStyle()
 
 void GameResultScreen::initTableInFrame()
 {
-	_font.loadFromFile(ResourceManager::instance()->getFont(Font::Arial));
 
 	initHeader();
 	initLabels();
@@ -43,7 +42,7 @@ void GameResultScreen::initTableInFrame()
 
 void GameResultScreen::initHeader()
 {
-	_header.setFont(_font);
+	_header.setFont(*ResourceManager::instance()->getFont(Font::Arial));
 	_header.setCharacterSize(50);
 	sf::FloatRect textRect = _header.getLocalBounds();
 	_header.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
@@ -52,17 +51,17 @@ void GameResultScreen::initHeader()
 
 void GameResultScreen::initLabels()
 {
-	_score.setFont(_font);
+	_score.setFont(*ResourceManager::instance()->getFont(Font::Arial));
 	sf::FloatRect rectOfScore = _score.getLocalBounds();
 	_score.setOrigin(rectOfScore.left + rectOfScore.width / 2.0f, rectOfScore.top + rectOfScore.height / 2.0f);
 	_score.setPosition(_frame.getPosition().x - _frame.getPosition().x / 2, _frame.getPosition().y - _frame.getPosition().y / 3);
 
-	_durationOfTheMatch.setFont(_font);
+	_durationOfTheMatch.setFont(*ResourceManager::instance()->getFont(Font::Arial));
 	_durationOfTheMatch.setOrigin(rectOfScore.left + rectOfScore.width / 2.0f, rectOfScore.top + rectOfScore.height / 2.0f);
 	_durationOfTheMatch.setPosition(
 		_frame.getPosition().x - _frame.getPosition().x / 2, _frame.getPosition().y - _frame.getPosition().y / 5);
 
-	_numberOfBouncedBalls.setFont(_font);
+	_numberOfBouncedBalls.setFont(*ResourceManager::instance()->getFont(Font::Arial));
 	_numberOfBouncedBalls.setOrigin(rectOfScore.left + rectOfScore.width / 2.0f, rectOfScore.top + rectOfScore.height / 2.0f);
 	_numberOfBouncedBalls.setPosition(
 		_frame.getPosition().x - _frame.getPosition().x / 2, _frame.getPosition().y - _frame.getPosition().y / 8);

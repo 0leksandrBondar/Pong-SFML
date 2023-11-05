@@ -24,7 +24,6 @@ private:
 	void initTableInFrame();
 
 private:
-	sf::Font _font;
 	sf::Text _score;
 	sf::Text _header;
 	sf::Text _durationOfTheMatch;
