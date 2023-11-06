@@ -28,7 +28,7 @@ void ResourceManager::initFontResources()
 
 void ResourceManager::addFont(Font font, const std::filesystem::path& path)
 {
-	auto* Font = new sf::Font;
+	std::shared_ptr<sf::Font> Font = std::make_shared<sf::Font>();
 	Font->loadFromFile(path.string());
 	_fonts.emplace(font, Font);
 }
@@ -49,7 +49,7 @@ sf::Sound* ResourceManager::getSound(Sound sound) const
 	return nullptr;
 }
 
-sf::Font* ResourceManager::getFont(Font font) const
+std::shared_ptr<sf::Font> ResourceManager::getFont(Font font) const
 {
 	const auto it = _fonts.find(font);
 	if (it != _fonts.cend())
@@ -67,7 +67,7 @@ void ResourceManager::initLabelsResources()
 	addText("Bot score: ", Label::BotScore);
 }
 
-sf::Text* ResourceManager::getLabel(Label label) const
+std::shared_ptr<sf::Text> ResourceManager::getLabel(Label label) const
 {
 	const auto it = _labels.find(label);
 	if (it != _labels.cend())
@@ -79,8 +79,7 @@ sf::Text* ResourceManager::getLabel(Label label) const
 
 void ResourceManager::addText(const std::string& text, Label label)
 {
-	auto* Text = new sf::Text(text, *getFont(Font::Arial));
-	_labels.emplace(label, Text);
+	_labels.emplace(label, std::make_shared<sf::Text>(text, *getFont(Font::Arial)));
 }
 
 void ResourceManager::initResources()
@@ -90,18 +89,23 @@ void ResourceManager::initResources()
 
 void ResourceManager::initLabelStyles()
 {
-	auto hint = getLabel(Label::ContinueHint);
-	hint->setFillColor(sf::Color::Yellow);
-
-	auto botScoreLabel = getLabel(Label::BotScore);
-	botScoreLabel->setStyle(sf::Text::Bold);
-	botScoreLabel->setCharacterSize(50);
-	botScoreLabel->setFillColor(sf::Color::Green);
-
-	auto playerScoreLabel = getLabel(Label::PlayerScore);
-	playerScoreLabel->setStyle(sf::Text::Bold);
-	playerScoreLabel->setCharacterSize(50);
-	playerScoreLabel->setFillColor(sf::Color::Green);
+	for (auto& label : _labels)
+	{
+		label.second->setStyle(sf::Text::Bold);
+		label.second->setCharacterSize(50);
+		if (label.first == Label::PlayerScore || label.first == Label::BotScore)
+		{
+			label.second->setFillColor(sf::Color::Green);
+		}
+		else if (label.first == Label::ExitHint)
+		{
+			continue;
+		}
+		else if (label.first == Label::ContinueHint)
+		{
+			label.second->setFillColor(sf::Color::Yellow);
+		}
+	}
 }
 
 void ResourceManager::updateBotScore(int score)

@@ -4,6 +4,7 @@
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <filesystem>
+#include <memory>
 #include <unordered_map>
 
 enum class Sound
@@ -37,9 +38,9 @@ public:
 	void updateBotScore(int score);
 	void updatePlayerScore(int score);
 
-	[[nodiscard]] sf::Font* getFont(Font font) const;
+	[[nodiscard]] std::shared_ptr<sf::Font> getFont(Font font) const;
 	[[nodiscard]] sf::Sound* getSound(Sound sound) const;
-	[[nodiscard]] sf::Text* getLabel(Label label) const;
+	[[nodiscard]] std::shared_ptr<sf::Text> getLabel(Label label) const;
 
 private:
 	ResourceManager();
@@ -54,7 +55,7 @@ private:
 
 private:
 	sf::Font _font;
-	std::unordered_map<Font, sf::Font*> _fonts;
-	std::unordered_map<Label, sf::Text*> _labels;
+	std::unordered_map<Font, std::shared_ptr<sf::Font>> _fonts;
+	std::unordered_map<Label, std::shared_ptr<sf::Text>> _labels;
 	std::unordered_map<Sound, std::pair<sf::SoundBuffer*, sf::Sound*>> _sounds;
 };

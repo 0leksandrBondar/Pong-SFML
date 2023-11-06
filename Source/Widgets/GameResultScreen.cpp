@@ -2,91 +2,70 @@
 
 #include "ResourceManager.h"
 
+namespace Constants
+{
+const std::string playerScoreText {"Player score: "};
+const std::string botScoreText {"Bot score : "};
+const std::string isWinnerText {"Victory "};
+const std::string MatchDurationText {"Duration of the match: "};
+}	 // namespace Constants
+
 GameResultScreen::GameResultScreen(sf::RenderWindow& window) : _gameWindow {window}
 {
-	initFrameStyle();
-	initTableInFrame();
+	initLabels();
 }
 
-sf::RectangleShape& GameResultScreen::shape()
-{
-	return _frame;
-}
-
-void GameResultScreen::initFrameStyle()
+void GameResultScreen::setDefaultPositionForLabels()
 {
 	const sf::Vector2u windowSize = _gameWindow.getSize();
-	const sf::Vector2f frameSize = sf::Vector2f(windowSize.x / 1.5, windowSize.y / 1.5);
 
-	_frame.setSize(frameSize);
-	_frame.setOrigin(frameSize.x / 2, frameSize.y / 2);
-	_frame.setPosition(windowSize.x / 2, windowSize.y / 2);
-	_frame.setFillColor(sf::Color::Black);
-	_frame.setOutlineColor(sf::Color::Red);
-	_frame.setOutlineThickness(2.0f);
-}
-
-void GameResultScreen::initTableInFrame()
-{
-
-	initHeader();
-	initLabels();
-
-	// --------------- _line separator between _header and columns --------------------------------------
-	_line.setSize(sf::Vector2f(_frame.getSize().x, 2.0f));
-	sf::FloatRect lineRect = _line.getLocalBounds();
-	_line.setFillColor(sf::Color::Red);
-	_line.setOrigin(lineRect.left + lineRect.width / 2.0f, lineRect.top + lineRect.height / 2.0f);
-	_line.setPosition(_frame.getPosition().x, _header.getPosition().y + lineRect.height + 50);
-}
-
-void GameResultScreen::initHeader()
-{
-	_header.setFont(*ResourceManager::instance()->getFont(Font::Arial));
-	_header.setCharacterSize(50);
-	sf::FloatRect textRect = _header.getLocalBounds();
-	_header.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-	_header.setPosition(_frame.getPosition().x, _frame.getPosition().y - _frame.getSize().y / 2 + 50);
+	for (const auto& label : _labels)
+	{
+		const sf::FloatRect labelRect = label.second->getLocalBounds();
+		switch (label.first)
+		{
+			case StatisticLabels::PlayerScore:
+			{
+				label.second->setPosition((windowSize.x - labelRect.width) / 5, (windowSize.y - labelRect.height) / 3);
+				break;
+			}
+			case StatisticLabels::BotScore:
+			{
+				label.second->setPosition((windowSize.x - labelRect.width) / 5, (windowSize.y - labelRect.height) / 4);
+				break;
+			}
+			case StatisticLabels::isWinner:
+			{
+				label.second->setPosition((windowSize.x - labelRect.width) / 2, (windowSize.y - labelRect.height) / 7);
+				break;
+			}
+			case StatisticLabels::MatchDuration:
+			{
+				label.second->setPosition((windowSize.x - labelRect.width) / 4.5, (windowSize.y - labelRect.height) / 2.5);
+				break;
+			}
+		}
+	}
 }
 
 void GameResultScreen::initLabels()
 {
-	_score.setFont(*ResourceManager::instance()->getFont(Font::Arial));
-	sf::FloatRect rectOfScore = _score.getLocalBounds();
-	_score.setOrigin(rectOfScore.left + rectOfScore.width / 2.0f, rectOfScore.top + rectOfScore.height / 2.0f);
-	_score.setPosition(_frame.getPosition().x - _frame.getPosition().x / 2, _frame.getPosition().y - _frame.getPosition().y / 3);
+	addLabel(StatisticLabels::isWinner, Constants::isWinnerText);
+	addLabel(StatisticLabels::BotScore, Constants::botScoreText);
+	addLabel(StatisticLabels::PlayerScore, Constants::playerScoreText);
+	addLabel(StatisticLabels::MatchDuration, Constants::MatchDurationText);
 
-	_durationOfTheMatch.setFont(*ResourceManager::instance()->getFont(Font::Arial));
-	_durationOfTheMatch.setOrigin(rectOfScore.left + rectOfScore.width / 2.0f, rectOfScore.top + rectOfScore.height / 2.0f);
-	_durationOfTheMatch.setPosition(
-		_frame.getPosition().x - _frame.getPosition().x / 2, _frame.getPosition().y - _frame.getPosition().y / 5);
-
-	_numberOfBouncedBalls.setFont(*ResourceManager::instance()->getFont(Font::Arial));
-	_numberOfBouncedBalls.setOrigin(rectOfScore.left + rectOfScore.width / 2.0f, rectOfScore.top + rectOfScore.height / 2.0f);
-	_numberOfBouncedBalls.setPosition(
-		_frame.getPosition().x - _frame.getPosition().x / 2, _frame.getPosition().y - _frame.getPosition().y / 8);
+	setLabelStyles();
+	setDefaultPositionForLabels();
 }
 
 void GameResultScreen::drawGameResultScreen()
 {
-	const std::string victoryLabel {"Victory"};
-	const std::string lossLabel {"Loss"};
-	const auto lable {_isPlayerWinner ? victoryLabel : lossLabel};
-	const auto Color {_isPlayerWinner ? sf::Color::Cyan : sf::Color::Red};
-
-	_header.setFillColor(Color);
-	_header.setString(lable);
-
-	_durationOfTheMatch.setString("Duration of the match: " + std::to_string(_elapsedTime.asSeconds()) + " sec.");
-	_numberOfBouncedBalls.setString("Number of bounced balls: ");
-	_score.setString("Player score: " + std::to_string(_playerScore) + "\n Bot score : " + std::to_string(_botScore));
-
-	_gameWindow.draw(_frame);
-	_gameWindow.draw(_line);
-	_gameWindow.draw(_score);
-	_gameWindow.draw(_header);
-	_gameWindow.draw(_durationOfTheMatch);
-	_gameWindow.draw(_numberOfBouncedBalls);
+	updateResultData();
+	for (const auto& label : _labels)
+	{
+		_gameWindow.draw(*label.second);
+	}
 }
 
 void GameResultScreen::setGameResultFields(int playerScore, int botScore)
@@ -103,4 +82,52 @@ void GameResultScreen::setElapsedTime(sf::Time elapsedTime)
 void GameResultScreen::isPlayerWinner(bool status)
 {
 	_isPlayerWinner = status;
+}
+
+void GameResultScreen::addLabel(StatisticLabels statisticLabels, const std::string& text)
+{
+	_labels.emplace(statisticLabels, std::make_shared<sf::Text>(text, *ResourceManager::instance()->getFont(Font::Arial)));
+}
+
+void GameResultScreen::setLabelStyles()
+{
+	for (auto& label : _labels)
+	{
+		if (label.first == StatisticLabels::isWinner)
+		{
+			label.second->setCharacterSize(70);
+		}
+		else
+		{
+			label.second->setCharacterSize(40);
+		}
+	}
+}
+
+void GameResultScreen::updateResultData()
+{
+	const std::string victoryLabel {"Victory"};
+	const std::string lossLabel {"Loss"};
+	const std::string result {_isPlayerWinner ? victoryLabel : lossLabel};
+	const sf::Color Color {_isPlayerWinner ? sf::Color::Cyan : sf::Color::Red};
+
+	for (auto& label : _labels)
+	{
+		switch (label.first)
+		{
+			case StatisticLabels::PlayerScore:
+				label.second->setString(Constants::playerScoreText + std::to_string(_playerScore));
+				break;
+			case StatisticLabels::BotScore:
+				label.second->setString(Constants::botScoreText + std::to_string(_botScore));
+				break;
+			case StatisticLabels::isWinner:
+				label.second->setString(result);
+				label.second->setFillColor(Color);
+				break;
+			case StatisticLabels::MatchDuration:
+				label.second->setString(Constants::MatchDurationText + std::to_string(_elapsedTime.asSeconds()) + " sec.");
+				break;
+		}
+	}
 }

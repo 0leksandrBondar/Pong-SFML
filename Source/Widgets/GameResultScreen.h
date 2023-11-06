@@ -4,13 +4,22 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Text.hpp>
+#include <memory>
+#include <unordered_map>
+
+enum class StatisticLabels
+{
+	PlayerScore,
+	BotScore,
+	isWinner,
+	MatchDuration
+};
 
 class GameResultScreen
 {
 public:
 	explicit GameResultScreen(sf::RenderWindow& window);
 
-	sf::RectangleShape& shape();
 	void drawGameResultScreen();
 
 	void setGameResultFields(int playerScore, int botScore);
@@ -18,16 +27,14 @@ public:
 	void isPlayerWinner(bool status);
 
 private:
+	void updateResultData();
 	void initLabels();
-	void initHeader();
-	void initFrameStyle();
-	void initTableInFrame();
+	void setLabelStyles();
+	void setDefaultPositionForLabels();
+	void addLabel(StatisticLabels statisticLabels, const std::string& text);
 
 private:
-	sf::Text _score;
-	sf::Text _header;
-	sf::Text _durationOfTheMatch;
-	sf::Text _numberOfBouncedBalls;
+	std::unordered_map<StatisticLabels, std::shared_ptr<sf::Text>> _labels;
 
 	sf::RectangleShape _line;
 	sf::RectangleShape _frame;
