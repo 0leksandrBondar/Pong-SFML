@@ -1,17 +1,17 @@
 #include "GameController.h"
 
+#include "ResourceManager.h"
+
 #include <SFML/Window/Keyboard.hpp>
 #include <random>
 
-GameController::GameController(sf::RenderWindow* window)
-	: _ball {sf::CircleShape(10, 10)}, _gameWindow {*window}, _gameResultScreen {GameResultScreen(window)}
+GameController::GameController(sf::RenderWindow& window)
+	: _ball {sf::CircleShape(10, 10)}, _gameWindow {window}, _gameResultScreen {GameResultScreen(window)}
 
 {
 	_ball.setFillColor(sf::Color::Green);
-
-	initSoundBuffer();
+	ResourceManager::instance()->initResources();
 	initCenterLine();
-	initLabelsStyle();
 	initHints();
 	initFirstDirection();
 	initDefaultPositions();
@@ -49,15 +49,15 @@ void GameController::handleMoveEvent()
 
 void GameController::initDefaultPositions()
 {
-	const sf::Vector2u windowSize = _gameWindow.getSize();
+	const sf::Vector2f windowSize = static_cast<sf::Vector2f>(_gameWindow.getSize());
 	const auto centerX {windowSize.x / 2};
 
 	_player.shape().setPosition(centerX - (centerX / 2), windowSize.y / 2);
 	_bot.shape().setPosition(centerX + (centerX / 2), windowSize.y / 2);
 	_ball.setPosition(centerX, _gameWindow.getSize().y / 2);
 
-	_botScore.setPosition(centerX + centerX / 5, 15);
-	_playerScore.setPosition(centerX - centerX / 2, 15);
+	ResourceManager::instance()->getLabel(Label::BotScore)->setPosition(centerX + centerX / 5, 15);
+	ResourceManager::instance()->getLabel(Label::PlayerScore)->setPosition(centerX - centerX / 2, 15);
 }
 
 void GameController::drawCenterLine()
@@ -96,7 +96,7 @@ void GameController::updateBallPosition()
 	if (_ball.getGlobalBounds().intersects(_player.shape().getGlobalBounds()) ||
 		_ball.getGlobalBounds().intersects(_bot.shape().getGlobalBounds()))
 	{
-		_sound.play();
+		ResourceManager::instance()->getSound(Sound::HitSound)->play();
 		_ballVelocity.x = -_ballVelocity.x;
 		if (ballCenterY < playerBounds.top + playerBounds.height / 3)
 		{
@@ -140,10 +140,10 @@ void GameController::handleBotBehavior()
 
 void GameController::drawScoreLabels()
 {
-	_botScore.setString("Bot score: " + std::to_string(_bot.score()));
-	_playerScore.setString("Player score: " + std::to_string(_player.score()));
-	_gameWindow.draw(_botScore);
-	_gameWindow.draw(_playerScore);
+	ResourceManager::instance()->updateBotScore(_bot.score());
+	ResourceManager::instance()->updatePlayerScore(_player.score());
+	_gameWindow.draw(*ResourceManager::instance()->getLabel(Label::BotScore));
+	_gameWindow.draw(*ResourceManager::instance()->getLabel(Label::PlayerScore));
 }
 
 /*!
@@ -227,19 +227,6 @@ void GameController::start()
 	}
 }
 
-void GameController::initLabelsStyle()
-{
-	_playerScore.setFont(_font);
-	_playerScore.setStyle(sf::Text::Bold);
-	_playerScore.setCharacterSize(50);
-	_playerScore.setFillColor(sf::Color::Green);
-
-	_botScore.setFont(_font);
-	_botScore.setStyle(sf::Text::Bold);
-	_botScore.setCharacterSize(50);
-	_botScore.setFillColor(sf::Color::Green);
-}
-
 void GameController::drawGameResult()
 {
 	_gameResultScreen.drawGameResultScreen();
@@ -253,31 +240,24 @@ void GameController::drawGameResult()
 
 void GameController::drawHints()
 {
-	_gameWindow.draw(_exitHint);
+	_gameWindow.draw(*ResourceManager::instance()->getLabel(Label::ExitHint));
 	if (_isRoundFinished)
 	{
-		_gameWindow.draw(_continueHint);
+		_gameWindow.draw(*ResourceManager::instance()->getLabel(Label::ContinueHint));
 	}
 }
 
 void GameController::initHints()
 {
-	_font.loadFromFile("Resource/Fonts/arial.ttf");
-
 	const sf::Vector2u windowSize = _gameWindow.getSize();
 
-	_exitHint.setFont(_font);
-	_exitHint.setFillColor(sf::Color::White);
-	_exitHint.setString("Press ESC to close the program");
-	const sf::FloatRect exitHintRect = _exitHint.getLocalBounds();
-	_exitHint.setPosition(20, windowSize.y - (exitHintRect.height + 20));
+	const sf::FloatRect exitHintRect = ResourceManager::instance()->getLabel(Label::ExitHint)->getLocalBounds();
+	ResourceManager::instance()->getLabel(Label::ExitHint)->setPosition(20, windowSize.y - (exitHintRect.height + 20));
 
-	_continueHint.setFont(_font);
-	_continueHint.setFillColor(sf::Color::White);
-	_continueHint.setString("Press SPACE to start the game");
-	_continueHint.setFillColor(sf::Color::Yellow);
-	const sf::FloatRect continueHintRect = _continueHint.getLocalBounds();
-	_continueHint.setPosition(windowSize.x / 2 - continueHintRect.width / 2, windowSize.y / 4);
+	const sf::FloatRect continueHintRect = ResourceManager::instance()->getLabel(Label::ContinueHint)->getLocalBounds();
+	ResourceManager::instance()
+		->getLabel(Label::ContinueHint)
+		->setPosition(windowSize.x / 2 - continueHintRect.width / 2, windowSize.y / 4);
 }
 
 void GameController::initCenterLine()
@@ -290,12 +270,6 @@ void GameController::initCenterLine()
 		_lineSprite.setTexture(_lineTexture.getTexture());
 		_lineSprite.setPosition((_gameWindow.getSize().x - 15) / 2, 0);
 	}
-}
-
-void GameController::initSoundBuffer()
-{
-	_soundBuffer.loadFromFile("Resource/Music/Paddle_Hit_Sound.wav");
-	_sound.setBuffer(_soundBuffer);
 }
 
 /*!

@@ -16,7 +16,7 @@ public:
 			ptr = std::unique_ptr<T>(new T);
 		}
 
-		return *ptr.get();
+		return *ptr;
 	}
 };
 

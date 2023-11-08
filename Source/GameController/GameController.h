@@ -17,7 +17,7 @@
 class GameController
 {
 public:
-	explicit GameController(sf::RenderWindow* window);
+	explicit GameController(sf::RenderWindow& window);
 
 	void start();
 
@@ -39,22 +39,11 @@ private:
 private:
 	void initHints();
 	void initCenterLine();
-	void initLabelsStyle();
-	void initSoundBuffer();
 	void initFirstDirection();
 	void initDefaultPositions();
 
 private:
-	sf::Font _font;
-	sf::Text _botScore;
-	sf::Text _exitHint;
-	sf::Text _playerScore;
-	sf::Text _continueHint;
-
 	sf::Clock _timer;
-
-	sf::Sound _sound;
-	sf::SoundBuffer _soundBuffer;
 
 	sf::Sprite _lineSprite;
 	sf::CircleShape _ball;
